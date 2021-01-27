@@ -78,7 +78,7 @@ class RSSI_Tools:
     def __calobrate_enviromental(self,MAC):
         sum_of_n = 0
         for i in range(2,10):
-            print('Place Beacon '+i+'m away')
+            print('Place Beacon '+str(i)+'m away')
             input('Press enter to continue:')
             RSSI = self.get_mean_RSSI(MAC)
             sum_of_n = sum_of_n + (self.__measured_power[MAC] - RSSI)/(10*math.log(i,10))

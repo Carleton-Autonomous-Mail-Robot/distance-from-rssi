@@ -43,11 +43,13 @@ class RSSI_Tools:
 
     def get_mean_RSSI(self,MAC:str):
         sum = 0
-        for i in range(10):
+        for i in range(5):
             RSSI = self.__read_RSSI(MAC)
+            if RSSI is None:
+                return None
             sum = sum + RSSI
             print(sum)
-        return sum / 10
+        return sum / 5
 
     '''
         calculates also the standard deviation
@@ -55,7 +57,7 @@ class RSSI_Tools:
     def __calculate_standard_dev(self,MAC:str):
         li = []
         sum = 0
-        for i in range(10):
+        for i in range(5):
             RSSI = self.__read_RSSI(MAC)
             if RSSI is None:
                 print('MAC Not Found')
@@ -63,15 +65,15 @@ class RSSI_Tools:
             li.append(RSSI) #populates a list with RSSI readings
             sum = sum + RSSI
             
-        mean = sum / 10 
+        mean = sum / 4 
         self.__measured_power[MAC] = mean
-        print('Measured Power Set: '+mean)
+        print('Measured Power Set: '+str(mean))
 
         sum_of_squares = 0
-        for i in range(100):
+        for i in range(5):
             sum_of_squares = pow((li[i] - mean),2)
         
-        variance = sum_of_squares / 9
+        variance = sum_of_squares / 4
         print('Standard Deviation: '+math.sqrt(sum_of_squares))
 
 

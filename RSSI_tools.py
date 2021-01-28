@@ -11,7 +11,8 @@ class RSSI_Tools:
         Reads RSSI of a given MAC address
     '''
     def __read_RSSI(self,MAC:str):
-        ble_list = Scanner().scan(2.0)
+        ble_list = Scanner().scan(4.0)
+        print(ble_list)
         for dev in ble_list:
             if dev.addr == MAC:
                 return dev.rssi

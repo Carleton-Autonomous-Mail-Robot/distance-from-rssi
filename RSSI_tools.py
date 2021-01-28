@@ -74,7 +74,7 @@ class RSSI_Tools:
         
         variance = sum_of_squares / (samples - 1)
         print('Standard Deviation: '+str(math.sqrt(sum_of_squares)))
-        print('Successful samples: '+samples+"/"+rng)
+        print('Successful samples: '+str(samples)+"/"+str(rng))
 
 
     def __calobrate_enviromental(self,MAC):

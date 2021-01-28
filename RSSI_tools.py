@@ -37,13 +37,15 @@ class RSSI_Tools:
 
     def get_mean_RSSI(self,MAC:str):
         sum = 0
-        for i in range(10):
+        samples = 10
+        rng = samples
+        for i in range(rng):
             RSSI = self.__read_RSSI(MAC)
             if RSSI is None:
-                return None
+                sample = samples - 1
             sum = sum + RSSI
             print(sum)
-        return sum / 10
+        return sum / samples
 
     '''
         calculates also the standard deviation

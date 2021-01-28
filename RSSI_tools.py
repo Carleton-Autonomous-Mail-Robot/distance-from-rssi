@@ -51,24 +51,26 @@ class RSSI_Tools:
     def __calculate_standard_dev(self,MAC:str):
         li = []
         sum = 0
-        for i in range(30):
+        samples = 30
+        rng = samples
+        for i in range(rng):
             RSSI = self.__read_RSSI(MAC)
             if RSSI is None:
-                print('MAC Not Found')
-                return
+                samples = samples - 1
             li.append(RSSI) #populates a list with RSSI readings
             sum = sum + RSSI
             
-        mean = sum / 30
+        mean = sum / samples
         self.__measured_power[MAC] = mean
         print('Measured Power Set: '+str(mean))
 
         sum_of_squares = 0
-        for i in range(30):
+        for i in range(samples):
             sum_of_squares = pow((li[i] - mean),2)
         
-        variance = sum_of_squares / 29
+        variance = sum_of_squares / (samples - 1)
         print('Standard Deviation: '+str(math.sqrt(sum_of_squares)))
+        print('Successful samples: '+samples+"/"+rng)
 
 
     def __calobrate_enviromental(self,MAC):

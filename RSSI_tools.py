@@ -1,5 +1,6 @@
 import os
 import math
+from bluepy.btle import Scanner
 
 class RSSI_Tools:
     def __init__(self):
@@ -10,19 +11,11 @@ class RSSI_Tools:
         Reads RSSI of a given MAC address
     '''
     def __read_RSSI(self,MAC:str):
-        raw_input = os.popen('sudo btmgmt find').read()
-
-        input_list = raw_input.splitlines()
-
-        beacon_rssi = None
-        for s in input_list:
-            if MAC in s:
-                s_split = s.split(' ')
-                beacon_rssi = s_split[s_split.index('rssi') + 1]
-
-        if beacon_rssi is None:
-            return None
-        return int(beacon_rssi)
+        ble_list = Scanner().scan(2.0)
+        for dev in ble_list:
+            if dev.addr == MAC:
+                return dev.rssi
+        return None
 
 
     '''

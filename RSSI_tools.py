@@ -1,5 +1,6 @@
 import os
 import math
+from bluepy.btle import Scanner
 
 class RSSI_Tools:
     def __init__(self):
@@ -10,19 +11,12 @@ class RSSI_Tools:
         Reads RSSI of a given MAC address
     '''
     def __read_RSSI(self,MAC:str):
-        raw_input = os.popen('sudo btmgmt find').read()
-
-        input_list = raw_input.splitlines()
-
-        beacon_rssi = None
-        for s in input_list:
-            if MAC in s:
-                s_split = s.split(' ')
-                beacon_rssi = s_split[s_split.index('rssi') + 1]
-
-        if beacon_rssi is None:
-            return None
-        return int(beacon_rssi)
+        ble_list = Scanner().scan(2.0)
+        for dev in ble_list:
+            #print(dev.addr)
+            if dev.addr == MAC.lower():
+                return dev.rssi
+        return None
 
 
     '''
@@ -43,13 +37,16 @@ class RSSI_Tools:
 
     def get_mean_RSSI(self,MAC:str):
         sum = 0
-        for i in range(5):
+        samples = 10
+        rng = 10
+        for i in range(rng):
             RSSI = self.__read_RSSI(MAC)
             if RSSI is None:
-                return None
+                sample = samples - 1
+                continue
             sum = sum + RSSI
-            print(sum)
-        return sum / 5
+            #print(sum)
+        return sum / samples
 
     '''
         calculates also the standard deviation
@@ -57,24 +54,27 @@ class RSSI_Tools:
     def __calculate_standard_dev(self,MAC:str):
         li = []
         sum = 0
-        for i in range(5):
+        samples = 30
+        rng = 30
+        for i in range(rng):
             RSSI = self.__read_RSSI(MAC)
             if RSSI is None:
-                print('MAC Not Found')
-                return
+                samples = samples - 1
+                continue
             li.append(RSSI) #populates a list with RSSI readings
             sum = sum + RSSI
             
-        mean = sum / 4 
+        mean = sum / samples
         self.__measured_power[MAC] = mean
         print('Measured Power Set: '+str(mean))
 
         sum_of_squares = 0
-        for i in range(5):
+        for i in range(samples):
             sum_of_squares = pow((li[i] - mean),2)
         
-        variance = sum_of_squares / 4
+        variance = sum_of_squares / (samples - 1)
         print('Standard Deviation: '+str(math.sqrt(sum_of_squares)))
+        print('Successful samples: '+str(samples)+"/"+str(rng))
 
 
     def __calobrate_enviromental(self,MAC):
@@ -84,7 +84,8 @@ class RSSI_Tools:
             input('Press enter to continue:')
             RSSI = self.get_mean_RSSI(MAC)
             sum_of_n = sum_of_n + (self.__measured_power[MAC] - RSSI)/(10*math.log(i,10))
-        self.__enviromental[MAC] = sum_of_n/10
+        self.__enviromental[MAC] = sum_of_n/8
+        print("Enviromental Factor: " + str(sum_of_n/8))
 
 
 

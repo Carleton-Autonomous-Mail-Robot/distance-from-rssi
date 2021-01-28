@@ -43,6 +43,7 @@ class RSSI_Tools:
             RSSI = self.__read_RSSI(MAC)
             if RSSI is None:
                 sample = samples - 1
+                continue
             sum = sum + RSSI
             print(sum)
         return sum / samples
@@ -59,6 +60,7 @@ class RSSI_Tools:
             RSSI = self.__read_RSSI(MAC)
             if RSSI is None:
                 samples = samples - 1
+                continue
             li.append(RSSI) #populates a list with RSSI readings
             sum = sum + RSSI
             

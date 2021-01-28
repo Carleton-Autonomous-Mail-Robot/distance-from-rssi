@@ -45,7 +45,7 @@ class RSSI_Tools:
                 sample = samples - 1
                 continue
             sum = sum + RSSI
-            print(sum)
+            #print(sum)
         return sum / samples
 
     '''
@@ -84,7 +84,8 @@ class RSSI_Tools:
             input('Press enter to continue:')
             RSSI = self.get_mean_RSSI(MAC)
             sum_of_n = sum_of_n + (self.__measured_power[MAC] - RSSI)/(10*math.log(i,10))
-        self.__enviromental[MAC] = sum_of_n/10
+        self.__enviromental[MAC] = sum_of_n/8
+        print("Enviromental Factor: " + str(sum_of_n/8))
 
 
 

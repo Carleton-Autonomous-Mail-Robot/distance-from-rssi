@@ -74,7 +74,7 @@ class RSSI_Tools:
             sum_of_squares = pow((li[i] - mean),2)
         
         variance = sum_of_squares / 4
-        print('Standard Deviation: '+math.sqrt(sum_of_squares))
+        print('Standard Deviation: '+str(math.sqrt(sum_of_squares)))
 
 
     def __calobrate_enviromental(self,MAC):

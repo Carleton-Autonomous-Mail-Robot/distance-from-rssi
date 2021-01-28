@@ -11,9 +11,9 @@ class RSSI_Tools:
         Reads RSSI of a given MAC address
     '''
     def __read_RSSI(self,MAC:str):
-        ble_list = Scanner().scan(4.0)
+        ble_list = Scanner().scan(2.0)
         for dev in ble_list:
-            print(dev.addr)
+            #print(dev.addr)
             if dev.addr == MAC.lower():
                 return dev.rssi
         return None
@@ -37,13 +37,13 @@ class RSSI_Tools:
 
     def get_mean_RSSI(self,MAC:str):
         sum = 0
-        for i in range(5):
+        for i in range(10):
             RSSI = self.__read_RSSI(MAC)
             if RSSI is None:
                 return None
             sum = sum + RSSI
             print(sum)
-        return sum / 5
+        return sum / 10
 
     '''
         calculates also the standard deviation
@@ -51,7 +51,7 @@ class RSSI_Tools:
     def __calculate_standard_dev(self,MAC:str):
         li = []
         sum = 0
-        for i in range(5):
+        for i in range(30):
             RSSI = self.__read_RSSI(MAC)
             if RSSI is None:
                 print('MAC Not Found')
@@ -59,15 +59,15 @@ class RSSI_Tools:
             li.append(RSSI) #populates a list with RSSI readings
             sum = sum + RSSI
             
-        mean = sum / 4 
+        mean = sum / 30
         self.__measured_power[MAC] = mean
         print('Measured Power Set: '+str(mean))
 
         sum_of_squares = 0
-        for i in range(5):
+        for i in range(30):
             sum_of_squares = pow((li[i] - mean),2)
         
-        variance = sum_of_squares / 4
+        variance = sum_of_squares / 29
         print('Standard Deviation: '+str(math.sqrt(sum_of_squares)))
 
 

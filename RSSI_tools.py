@@ -38,7 +38,7 @@ class RSSI_Tools:
     def get_mean_RSSI(self,MAC:str):
         sum = 0
         samples = 10
-        rng = samples
+        rng = 10
         for i in range(rng):
             RSSI = self.__read_RSSI(MAC)
             if RSSI is None:
@@ -55,7 +55,7 @@ class RSSI_Tools:
         li = []
         sum = 0
         samples = 30
-        rng = samples
+        rng = 30
         for i in range(rng):
             RSSI = self.__read_RSSI(MAC)
             if RSSI is None:

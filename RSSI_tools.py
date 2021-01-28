@@ -12,8 +12,8 @@ class RSSI_Tools:
     '''
     def __read_RSSI(self,MAC:str):
         ble_list = Scanner().scan(4.0)
-        print(ble_list)
         for dev in ble_list:
+            print(dev.addr)
             if dev.addr == MAC:
                 return dev.rssi
         return None

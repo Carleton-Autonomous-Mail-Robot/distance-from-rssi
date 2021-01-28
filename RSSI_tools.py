@@ -14,7 +14,7 @@ class RSSI_Tools:
         ble_list = Scanner().scan(4.0)
         for dev in ble_list:
             print(dev.addr)
-            if dev.addr == MAC:
+            if dev.addr == MAC.lower():
                 return dev.rssi
         return None
 

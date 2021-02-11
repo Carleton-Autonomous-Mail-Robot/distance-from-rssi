@@ -42,7 +42,7 @@ class RSSI_Tools:
         for i in range(rng):
             RSSI = self.__read_RSSI(MAC)
             if RSSI is None:
-                sample = samples - 1
+                samples = samples - 1
                 continue
             sum = sum + RSSI
             #print(sum)

@@ -4,7 +4,7 @@ from bluepy.btle import Scanner
 
 class RSSI_Tools:
     def __init__(self):
-        self.__measured_power = {}
+        self.__measured_power = -59
         self.__enviromental = {}
 
     '''
@@ -22,15 +22,7 @@ class RSSI_Tools:
     '''
         returns the distance of beacon
     '''
-    def get_distance(self,MAC)->float:
-        if MAC in self.__measured_power:
-            RSSI = self.get_mean_RSSI(MAC)
-            return pow(10,(self.__measured_power[MAC] - RSSI)/(10*self.__enviromental[MAC]))
-        
-        print('Place Beacon at 1m from PI')
-        input('Press enter to continue')
-
-        self.__calculate_standard_dev(MAC)
+    def get_enviromental(self,MAC)->float:
         self.__calobrate_enviromental(MAC)
 
 
@@ -48,33 +40,6 @@ class RSSI_Tools:
             #print(sum)
         return sum / samples
 
-    '''
-        calculates also the standard deviation
-    '''
-    def __calculate_standard_dev(self,MAC:str):
-        li = []
-        sum = 0
-        samples = 30
-        rng = 30
-        for i in range(rng):
-            RSSI = self.__read_RSSI(MAC)
-            if RSSI is None:
-                samples = samples - 1
-                continue
-            li.append(RSSI) #populates a list with RSSI readings
-            sum = sum + RSSI
-            
-        mean = sum / samples
-        self.__measured_power[MAC] = mean
-        print('Measured Power Set: '+str(mean))
-
-        sum_of_squares = 0
-        for i in range(samples):
-            sum_of_squares = pow((li[i] - mean),2)
-        
-        variance = sum_of_squares / (samples - 1)
-        print('Standard Deviation: '+str(math.sqrt(sum_of_squares)))
-        print('Successful samples: '+str(samples)+"/"+str(rng))
 
 
     def __calobrate_enviromental(self,MAC):
@@ -83,7 +48,7 @@ class RSSI_Tools:
             print('Place Beacon '+str(i)+'m away')
             input('Press enter to continue:')
             RSSI = self.get_mean_RSSI(MAC)
-            sum_of_n = sum_of_n + (self.__measured_power[MAC] - RSSI)/(10*math.log(i,10))
+            sum_of_n = sum_of_n + (self.__measured_power - RSSI)/(10*math.log(i,10))
         self.__enviromental[MAC] = sum_of_n/8
         print("Enviromental Factor: " + str(sum_of_n/8))
 
@@ -94,7 +59,7 @@ tools = RSSI_Tools()
 
 while True:
     mac = input('Enter MAC Address: ')
-    tools.get_distance(mac)
+    tools.get_enviromental(mac)
 
 
 

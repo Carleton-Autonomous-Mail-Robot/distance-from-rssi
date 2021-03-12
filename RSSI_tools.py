@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 import math
 from bluepy.btle import Scanner
@@ -10,7 +12,7 @@ class RSSI_Tools:
     '''
         Reads RSSI of a given MAC address
     '''
-    def __read_RSSI(self,MAC:str):
+    def __read_RSSI(self,MAC):
         ble_list = Scanner().scan(2.0)
         for dev in ble_list:
             #print(dev.addr)
@@ -22,20 +24,20 @@ class RSSI_Tools:
     '''
         returns the distance of beacon
     '''
-    def get_distance(self,MAC)->float:
+    def get_distance(self,MAC):
         if MAC in self.__measured_power:
             RSSI = self.get_mean_RSSI(MAC)
             return pow(10,(self.__measured_power[MAC] - RSSI)/(10*self.__enviromental[MAC]))
         
         print('Place Beacon at 1m from PI')
-        input('Press enter to continue')
+        raw_input('Press enter to continue')
 
         self.__calculate_standard_dev(MAC)
         self.__calobrate_enviromental(MAC)
 
 
 
-    def get_mean_RSSI(self,MAC:str):
+    def get_mean_RSSI(self,MAC):
         sum = 0
         samples = 10
         rng = 10
@@ -51,7 +53,7 @@ class RSSI_Tools:
     '''
         calculates also the standard deviation
     '''
-    def __calculate_standard_dev(self,MAC:str):
+    def __calculate_standard_dev(self,MAC):
         li = []
         sum = 0
         samples = 30
@@ -79,13 +81,13 @@ class RSSI_Tools:
 
     def __calobrate_enviromental(self,MAC):
         sum_of_n = 0
-        for i in range(2,10):
+        for i in range(2,7):
             print('Place Beacon '+str(i)+'m away')
-            input('Press enter to continue:')
+            raw_input('Press enter to continue:')
             RSSI = self.get_mean_RSSI(MAC)
             sum_of_n = sum_of_n + (self.__measured_power[MAC] - RSSI)/(10*math.log(i,10))
-        self.__enviromental[MAC] = sum_of_n/8
-        print("Enviromental Factor: " + str(sum_of_n/8))
+        self.__enviromental[MAC] = sum_of_n/5
+        print("Enviromental Factor: " + str(sum_of_n/5))
 
 
 
@@ -93,7 +95,7 @@ class RSSI_Tools:
 tools = RSSI_Tools()
 
 while True:
-    mac = input('Enter MAC Address: ')
+    mac = raw_input('Enter MAC Address: ')
     tools.get_distance(mac)
 
 

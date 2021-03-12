@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 import math
 from bluepy.btle import Scanner
@@ -10,7 +12,7 @@ class RSSI_Tools:
     '''
         Reads RSSI of a given MAC address
     '''
-    def __read_RSSI(self,MAC:str):
+    def __read_RSSI(self,MAC):
         ble_list = Scanner().scan(0.5)
         for dev in ble_list:
             #print(dev.addr)
@@ -22,12 +24,12 @@ class RSSI_Tools:
     '''
         returns the distance of beacon
     '''
-    def get_enviromental(self,MAC)->float:
+    def get_enviromental(self,MAC):
         self.__calobrate_enviromental(MAC)
 
 
 
-    def get_mean_RSSI(self,MAC:str):
+    def get_mean_RSSI(self,MAC):
         sum = 0
         samples = 10
         rng = 10
@@ -46,19 +48,29 @@ class RSSI_Tools:
         sum_of_n = 0
         for i in range(2,10):
             print('Place Beacon '+str(i)+'m away')
-            input('Press enter to continue:')
+            raw_input('Press enter to continue:')
             RSSI = self.get_mean_RSSI(MAC)
             sum_of_n = sum_of_n + (self.__measured_power - RSSI)/(10*math.log(i,10))
         self.__enviromental[MAC] = sum_of_n/8
         print("Enviromental Factor: " + str(sum_of_n/8))
-
-
+        
+    
+    '''
+        Reads RSSI of a given MAC address
+    '''
+    def read_RSSI(self,MAC):
+        ble_list = Scanner().scan(1)
+        for dev in ble_list:
+            if dev.addr == MAC.lower():
+                print(dev.addr)
+        return None
 
         
 tools = RSSI_Tools()
 
+
 while True:
-    mac = input('Enter MAC Address: ')
+    mac = raw_input('Enter MAC Address: ')
     tools.get_enviromental(mac)
 
 

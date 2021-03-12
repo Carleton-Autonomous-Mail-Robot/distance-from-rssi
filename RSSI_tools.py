@@ -40,7 +40,10 @@ class RSSI_Tools:
                 continue
             sum = sum + RSSI
             #print(sum)
-        return sum / samples
+        if samples == 0:
+            return 0
+        else:
+            return sum / samples
 
 
 
@@ -50,13 +53,14 @@ class RSSI_Tools:
             print('Place Beacon '+str(i)+'m away')
             raw_input('Press enter to continue:')
             RSSI = self.get_mean_RSSI(MAC)
+            #print(RSSI)
             sum_of_n = sum_of_n + (self.__measured_power - RSSI)/(10*math.log(i,10))
         self.__enviromental[MAC] = sum_of_n/8
         print("Enviromental Factor: " + str(sum_of_n/8))
         
     
     '''
-        Reads RSSI of a given MAC address
+        Reads addr of a given MAC address
     '''
     def read_RSSI(self,MAC):
         ble_list = Scanner().scan(1)
@@ -67,7 +71,6 @@ class RSSI_Tools:
 
         
 tools = RSSI_Tools()
-
 
 while True:
     mac = raw_input('Enter MAC Address: ')

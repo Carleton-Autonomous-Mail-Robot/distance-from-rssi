@@ -5,9 +5,10 @@ import math
 from bluepy.btle import Scanner
 
 class RSSI_Tools:
-    def __init__(self):
+    def __init__(self, size):
         self.__measured_power = {}
         self.__enviromental = {}
+        self.__roomsize = int(size)
 
     '''
         Reads RSSI of a given MAC address
@@ -81,18 +82,18 @@ class RSSI_Tools:
 
     def __calobrate_enviromental(self,MAC):
         sum_of_n = 0
-        for i in range(2,7):
+        for i in range(2,self.__roomsize + 1):
             print('Place Beacon '+str(i)+'m away')
             raw_input('Press enter to continue:')
             RSSI = self.get_mean_RSSI(MAC)
             sum_of_n = sum_of_n + (self.__measured_power[MAC] - RSSI)/(10*math.log(i,10))
-        self.__enviromental[MAC] = sum_of_n/5
-        print("Enviromental Factor: " + str(sum_of_n/5))
+        self.__enviromental[MAC] = sum_of_n/(self.__roomsize-1)
+        print("Enviromental Factor: " + str(sum_of_n/(self.__roomsize-1)))
 
 
 
         
-tools = RSSI_Tools()
+tools = RSSI_Tools(raw_input('How large is your room in meters?: '))
 
 while True:
     mac = raw_input('Enter MAC Address: ')
